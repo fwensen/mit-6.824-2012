@@ -26,11 +26,7 @@ lock_server::stat(int clt, lock_protocol::lockid_t lid, int &r) {
 
 lock_protocol::status 
 lock_server::acquire(int clt, lock_protocol::lockid_t lid, lock_protocol::status &r) {
-#ifdef _DEBUG
-	printf("[log] %d acquire %d\n", clt, (int)lid);
-#endif
 
-    //lock_protocol::status ret = lock_protocol::OK;
 	ScopedLock lk(&mutex);
     
     std::map<lock_protocol::lockid_t, lock_state*>::iterator ite = lock_state_map.find(lid);
@@ -47,17 +43,11 @@ lock_server::acquire(int clt, lock_protocol::lockid_t lid, lock_protocol::status
         ite->second->state = lock_state::LOCKED;
     }
 
-#ifdef _DEBUG
-	printf("[log] %d acquire %d done\n", clt, (int)lid);
-#endif
 	return lock_protocol::OK;
 }
 
 lock_protocol::status 
 lock_server::release(int clt, lock_protocol::lockid_t lid, lock_protocol::status &r) {
-#ifdef _DEBUG
-	printf("[log] %d release %d\n", clt, (int)lid);
-#endif
 	
     lock_protocol::status ret = lock_protocol::OK;
     ScopedLock lk(&mutex);
@@ -65,13 +55,10 @@ lock_server::release(int clt, lock_protocol::lockid_t lid, lock_protocol::status
     std::map<lock_protocol::lockid_t, lock_state*>::iterator ite = lock_state_map.find(lid);
     if (ite != lock_state_map.end()) {
         ite->second->state = lock_state::FREE;
-        pthread_cond_signal(&ite->second->lock_cond_);
+        ret = pthread_cond_broadcast(&ite->second->lock_cond_) ? ret : lock_protocol::RETRY;
     } else {
         ret =  lock_protocol::NOENT;
     }
 
-#ifdef _DEBUG
-	printf("[log] %d release %d done\n", clt, (int)lid);
-#endif
 	return ret;
 }
