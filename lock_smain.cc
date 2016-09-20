@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "lock_server.h"
-
+#include <unistd.h>
 #include "jsl_log.h"
 
 // Main loop of lock_server

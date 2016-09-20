@@ -8,6 +8,7 @@
 #include "lock_protocol.h"
 #include "lock_client.h"
 #include "rpc.h"
+#include "lock_state.h"
 #include <map>
 //#define _DEBUG
 
@@ -16,6 +17,7 @@ class lock_server {
  protected:
   int nacquire;
   std::map<lock_protocol::lockid_t, int> possessed;
+  std::map<lock_protocol::lockid_t, lock_state*> lock_state_map;
   pthread_mutex_t mutex;
   pthread_cond_t cond;
 
@@ -28,10 +30,3 @@ class lock_server {
 };
 
 #endif 
-
-
-
-
-
-
-

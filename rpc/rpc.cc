@@ -63,7 +63,7 @@
 #include "rpc.h"
 #include "method_thread.h"
 #include "slock.h"
-
+#include<unistd.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
@@ -662,7 +662,7 @@ rpcs::checkduplicate_and_update(unsigned int clt_nonce, unsigned int xid,
 {
 	ScopedLock rwl(&reply_window_m_);
 
-     std::list<reply_t> &replies = reply_window_[clt_nonce];
+    std::list<reply_t> &replies = reply_window_[clt_nonce];
 	std::list<reply_t>::iterator it = replies.begin();
 	while (it != replies.end() && it->xid < xid_rep) {
 		free(it->buf);

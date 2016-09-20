@@ -6,7 +6,7 @@
 #include <list>
 #include <map>
 #include <stdio.h>
-
+#include <unistd.h>
 #include "thr_pool.h"
 #include "marshall.h"
 #include "connection.h"
